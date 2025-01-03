@@ -9,20 +9,45 @@ class LangflowClient {
         headers["Authorization"] = `Bearer ${this.applicationToken}`;
         headers["Content-Type"] = "application/json";
         const url = `${this.baseURL}${endpoint}`;
+
         try {
+            // Log the request details
+            console.log('Making request to:', url);
+            console.log('Request method:', 'POST');
+            console.log('Request headers:', headers);
+
             const response = await fetch(url, {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify(body)
+                body: JSON.stringify(body),
+                // Add these options for CORS
+                mode: 'cors',
+                credentials: 'include'  // If you need to send cookies
             });
 
+            // Log response details
+            console.log('Response status:', response.status);
+            console.log('Response headers:', Object.fromEntries(response.headers));
+
+            if (response.status === 405) {
+                console.error('405 Method Not Allowed - Available methods:', response.headers.get('Allow'));
+                throw new Error(`HTTP method POST not allowed for ${endpoint}. Allowed methods: ${response.headers.get('Allow')}`);
+            }
+
+            // Rest of your error handling...
             const responseMessage = await response.json();
             if (!response.ok) {
                 throw new Error(`${response.status} ${response.statusText} - ${JSON.stringify(responseMessage)}`);
             }
             return responseMessage;
         } catch (error) {
-            console.error('Request Error:', error.message);
+            console.error('Request Failed:', {
+                url,
+                status: error.status,
+                message: error.message,
+                endpoint,
+                baseURL: this.baseURL
+            });
             throw error;
         }
     }
@@ -112,14 +137,3 @@ export default async function getInsights(inputValue, inputType = 'chat', output
         console.error('Main Error', error.message);
     }
 }
-
-// const args = process.argv.slice(2);
-// if (args.length < 1) {
-//   console.error('Please run the file with the message as an argument: node <YOUR_FILE_NAME>.js "user_message"');
-// }
-// main(
-//   args[0], // inputValue
-//   args[1], // inputType
-//   args[2], // outputType
-//   args[3] === 'true' // stream
-// );
