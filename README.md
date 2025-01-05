@@ -2,7 +2,7 @@
 
 An intelligent analytics tool that provides detailed insights for different types of social media content including reels, static images, and carousels.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://social-media-analyser.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://social-media-performance-analyser.vercel.app/)
 
 ## Overview
 
