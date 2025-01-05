@@ -1,9 +1,16 @@
 export default async function getInsights(keyword) {
-    try {
-        console.log(`${import.meta.env.VITE_API}/${keyword}`)
-        const res = await fetch(`${import.meta.env.VITE_API}/${keyword}`);
-        return await res.text();
-    } catch (error) {
-        throw error;
-    }
+    const response = await fetch(
+        "https://socialmedia-performance-analyser.onrender.com/runFlow",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ inputValue: keyword }), // Send selectedType as inputValue
+        }
+      );
+
+      const data = await response.json(); 
+
+      return data.message
 }
